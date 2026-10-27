@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
+// Root widget that sets up the app theme and loads the signup page
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -43,6 +43,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
 
+  // Controllers to read what the user types
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -54,6 +55,7 @@ class _SignupPageState extends State<SignupPage> {
   String _tip = '';
   String _tipError = '';
 
+  // Preset tips for each category (no real AI involved)
   final Map<String, String> _tips = {
     'password_help':
         'Use a unique password with letters, numbers, and symbols.',
@@ -66,6 +68,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
+    // Rebuild the UI whenever the password changes so strength updates live
     _passwordController.addListener(_updatePassword);
   }
 
@@ -73,6 +76,7 @@ class _SignupPageState extends State<SignupPage> {
     setState(() {});
   }
 
+  // Clean up controllers when the page is removed
   @override
   void dispose() {
     _nameController.dispose();
@@ -122,6 +126,7 @@ class _SignupPageState extends State<SignupPage> {
     return Colors.green;
   }
 
+  // Simulates loading a tip with a short delay
   Future<void> _getTip() async {
     if (_loading) {
       return;
@@ -135,6 +140,7 @@ class _SignupPageState extends State<SignupPage> {
 
     await Future.delayed(const Duration(seconds: 1));
 
+    // Stop if the page was closed while waiting
     if (!mounted) {
       return;
     }
@@ -144,6 +150,7 @@ class _SignupPageState extends State<SignupPage> {
     setState(() {
       _loading = false;
 
+      // Missing category (the "Test Error" option) shows an error
       if (result == null || result.isEmpty) {
         _tipError = 'Tip is not available. Please try again.';
       } else {
@@ -152,6 +159,7 @@ class _SignupPageState extends State<SignupPage> {
     });
   }
 
+  // Validates the form and shows a success message
   void _signup() {
     if (_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -178,6 +186,7 @@ class _SignupPageState extends State<SignupPage> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Center(
+          // Limit width so the form looks good on wide screens
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 500),
             child: Card(
@@ -221,6 +230,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(height: 25),
 
+                      // Name field
                       TextFormField(
                         controller: _nameController,
                         decoration: const InputDecoration(
@@ -236,6 +246,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(height: 16),
 
+                      // Email field with a simple format check
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -261,6 +272,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(height: 16),
 
+                      // Password field with show/hide toggle
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _hidePassword,
@@ -294,6 +306,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(height: 12),
 
+                      // Live password strength feedback
                       Text(
                         'Password Strength: ${_passwordStrength()}',
                         style: TextStyle(
@@ -312,6 +325,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(height: 16),
 
+                      // Must match the password above
                       TextFormField(
                         controller: _confirmController,
                         obscureText: true,
@@ -355,6 +369,7 @@ class _SignupPageState extends State<SignupPage> {
                       const Divider(),
                       const SizedBox(height: 15),
 
+                      // Signup Coach section with preset tips and fake loading
                       const Text(
                         'Signup Coach',
                         style: TextStyle(
@@ -398,6 +413,7 @@ class _SignupPageState extends State<SignupPage> {
                             child: Text('Test Error'),
                           ),
                         ],
+                        // Disabled while a tip is loading
                         onChanged: _loading
                             ? null
                             : (value) {
@@ -425,6 +441,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(height: 18),
 
+                      // Loading spinner
                       if (_loading)
                         const Column(
                           children: [
@@ -434,6 +451,7 @@ class _SignupPageState extends State<SignupPage> {
                           ],
                         ),
 
+                      // Tip result box
                       if (_tip.isNotEmpty)
                         Container(
                           padding: const EdgeInsets.all(15),
@@ -457,6 +475,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                         ),
 
+                      // Error message with a retry button
                       if (_tipError.isNotEmpty)
                         Column(
                           children: [
